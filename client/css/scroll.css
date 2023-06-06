@@ -1,0 +1,15 @@
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #101010;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #4d4d4d;
+}
+
+.scrollbox-sidebar:hover {
+  overflow-y: scroll;
+}
