@@ -59,5 +59,8 @@ db.TransactionDetail = require("./transactionDetail")(sequelize, Sequelize);
 db.Product.belongsTo(db.Category, {
   foreignKey: "category_id",
 });
+db.Stock.belongsTo(db.Product, {
+  foreignKey: "product_id",
+});
 
 module.exports = db;

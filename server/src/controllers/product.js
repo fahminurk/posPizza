@@ -78,6 +78,7 @@ const productController = {
         description,
         category_id,
         product_url: productImage + filename,
+        status: "AVAILABLE",
       });
       // console.log(filename);
       // console.log(pr);

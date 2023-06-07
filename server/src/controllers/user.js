@@ -6,129 +6,77 @@ const avatarUser = process.env.avatarUser;
 
 const userController = {
   getAllUser: async (req, res) => {
-    await db.User.findAll().then((result) => res.send(result));
-  },
-  registerCashier: async (req, res) => {
     try {
-      const { name, email, password, phone } = req.body;
+      const { page, limit, search, role } = req.query;
+      const currentPage = page || 1;
+      const itemsPerPage = limit || 10;
+      const offset = (currentPage - 1) * itemsPerPage;
+
+      const { count, rows } = role
+        ? await db.User.findAndCountAll({
+            limit: parseInt(itemsPerPage),
+            offset,
+
+            where: {
+              name: {
+                [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
+              },
+              role: role ? role : null,
+            },
+          })
+        : await db.User.findAndCountAll({
+            limit: parseInt(itemsPerPage),
+            offset,
+
+            where: {
+              name: {
+                [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
+              },
+            },
+          });
+      const totalPages = Math.ceil(count / itemsPerPage);
+      const { count: all } = await db.User.findAndCountAll();
+      const { count: admin } = await db.User.findAndCountAll({
+        where: {
+          role: "ADMIN",
+        },
+      });
+      const { count: cashier } = await db.User.findAndCountAll({
+        where: {
+          role: "CASHIER",
+        },
+      });
+
+      return res.send({
+        users: rows,
+        totalPages,
+        all,
+        admin,
+        cashier,
+      });
+    } catch (err) {
+      console.log(err.message);
+      return res.status(500).send(err.message);
+    }
+  },
+  register: async (req, res) => {
+    try {
+      const { name, email, password, phone, role } = req.body;
       const hashPassword = await bcrypt.hash(password, 10);
+      const { filename } = req.file;
 
       await db.User.create({
         name,
         email,
         password: hashPassword,
         phone,
-        role: "CASHIER",
+        role,
+        avatar_url: avatarUser + filename,
       });
 
       return res.send({
         message: "register cashier berhasil",
       });
-    } catch (err) {
-      console.log(err.message);
-      return res.status(500).send(err.message);
-    }
-  },
-  registerAdmin: async (req, res) => {
-    try {
-      const { name, email, password, phone } = req.body;
-      const { filename } = req.file;
-      const hashPassword = await bcrypt.hash(password, 10);
-
-      await db.User.create({
-        name,
-        email,
-        password: hashPassword,
-        phone,
-        role: "ADMIN",
-        avatar_url: avatarUser + filename,
-      });
-      return res.send({
-        message: "register admin berhasil",
-      });
-    } catch (err) {
-      console.log(err.message);
-      return res.status(500).send(err.message);
-    }
-  },
-  loginAdmin: async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      const admin = await db.User.findOne({
-        where: {
-          email,
-          role: "ADMIN",
-        },
-      });
-
-      if (admin) {
-        const match = await bcrypt.compare(password, admin.dataValues.password);
-        if (match) {
-          const payload = {
-            id: admin.dataValues.id,
-          };
-
-          const generateToken = nanoid();
-          const token = await db.Token.create({
-            expired: moment().add(1, "days").format(),
-            token: generateToken,
-            payload: JSON.stringify(payload),
-            status: "LOGIN",
-            role: "ADMIN",
-          });
-          return res.send({
-            message: "login berhasil",
-            value: admin,
-            token: token.dataValues.token,
-          });
-        } else {
-          throw new Error("wrong password");
-        }
-      } else {
-        throw new Error("admin not found");
-      }
-    } catch (err) {
-      console.log(err.message);
-      return res.status(500).send(err.message);
-    }
-  },
-  loginCashier: async (req, res) => {
-    try {
-      const { email, password } = req.body;
-      const cashier = await db.User.findOne({
-        where: {
-          email,
-          role: "CASHIER",
-        },
-      });
-
-      if (cashier) {
-        const match = await bcrypt.compare(
-          password,
-          cashier.dataValues.password
-        );
-        if (match) {
-          const payload = {
-            id: cashier.dataValues.id,
-          };
-
-          const generateToken = nanoid();
-          const token = await db.Token.create({
-            expired: moment().add(1, "d").format(),
-            token: generateToken,
-            payload: JSON.stringify(payload),
-            status: "LOGIN",
-          });
-          return res.send({
-            message: "login berhasil",
-            token: token.dataValues.token,
-          });
-        } else {
-          throw new Error("wrong password");
-        }
-      } else {
-        throw new Error("cashier not found");
-      }
     } catch (err) {
       console.log(err.message);
       return res.status(500).send(err.message);
@@ -169,6 +117,46 @@ const userController = {
       } else {
         throw new Error("cashier not found");
       }
+    } catch (err) {
+      console.log(err.message);
+      return res.status(500).send(err.message);
+    }
+  },
+  editUser: async (req, res) => {
+    try {
+      const { name, password, email, phone, role } = req.body;
+      const { filename } = req.file;
+
+      const hashPassword = await bcrypt.hash(password, 10);
+
+      await db.User.update(
+        {
+          name,
+          password: hashPassword,
+          email,
+          phone,
+          role,
+          avatar_url: avatarUser + filename,
+        },
+        {
+          where: {
+            id: req.params.id,
+          },
+        }
+      ).then((result) => res.send(result));
+    } catch (err) {
+      console.log(err.message);
+      return res.status(500).send(err.message);
+    }
+  },
+  deleteUser: async (req, res) => {
+    try {
+      await db.User.destroy({
+        where: {
+          id: req.params.id,
+        },
+      });
+      return res.send({ message: "deleted" });
     } catch (err) {
       console.log(err.message);
       return res.status(500).send(err.message);

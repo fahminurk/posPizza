@@ -1,11 +1,21 @@
 module.exports = (sequelize, Sequelize) => {
-  const HistoryStock = sequelize.define("HistoryStocks", {
-    // product_id: Sequelize.INTEGER,
-    status: {
-      type: Sequelize.ENUM("IN", "OUT"),
+  const HistoryStock = sequelize.define(
+    "HistoryStocks",
+    {
+      // product_id: Sequelize.INTEGER,
+      status: {
+        type: Sequelize.ENUM("IN", "OUT"),
+      },
+      quantity: {
+        type: Sequelize.INTEGER,
+      },
+      reference: {
+        type: Sequelize.STRING,
+      },
     },
-    quantity: Sequelize.INTEGER,
-    reference: Sequelize.STRING,
-  });
+    {
+      paranoid: true,
+    }
+  );
   return HistoryStock;
 };

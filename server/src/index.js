@@ -17,8 +17,8 @@ app.get("/", (req, res) => res.send("test"));
 app.use("/users", routes.userRoutes);
 app.use("/products", routes.productRoutes);
 app.use("/categories", routes.categoryRoutes);
-app.use("/imageProduct", express.static(`${__dirname}/public/product`));
-app.use("/avatarUser", express.static(`${__dirname}/public/avatar`));
+app.use("/imageProduct", express.static(`${__dirname}/public/product`)); // ngeset gambar product ke folder product
+app.use("/avatarUser", express.static(`${__dirname}/public/avatar`)); // ngeset gambar user ke folder user
 
 app.listen(PORT, () => {
   console.log(`server is running on PORT: ${PORT}`);
