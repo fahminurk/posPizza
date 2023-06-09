@@ -5,6 +5,7 @@ const productController = require("../controllers").productController;
 
 //get all product
 router.get("/", productController.getAllProduct);
+//
 
 //edit product
 router.patch(

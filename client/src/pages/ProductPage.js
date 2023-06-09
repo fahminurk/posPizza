@@ -10,13 +10,13 @@ import {
 } from "@chakra-ui/react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
-import NavbarAdmin from "../components/navbarAdmin";
-import SidebarAdmin from "../components/sidebarAdmin";
+import NavbarAdmin from "../components/admin/navbarAdmin";
+import SidebarAdmin from "../components/admin/sidebarAdmin";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import ProductList from "../components/productList";
-import { CreateProduct } from "../components/createProduct";
-import { SearchBarProduct } from "../components/SearchBarProduct";
+import ProductList from "../components/admin/products/productList";
+import { CreateProduct } from "../components/admin/products/createProduct";
+import { SearchBarProduct } from "../components/admin/SearchBarProduct";
 // import "../css/scroll.css";
 
 export default function ProductPage() {
@@ -32,17 +32,25 @@ export default function ProductPage() {
 
   const itemsPerPage = 5;
 
-  // console.log(products);
-  // console.log(totalPages);
+  // const [sortby, setSortby] = useState("name");
+  // const [sortdir, setSortdir] = useState("ASC");
 
   useEffect(() => {
     fetchProduct(currentPage);
   }, []);
 
   //fetchProducts
-  async function fetchProduct(page, category, search = "") {
+  async function fetchProduct(
+    page,
+    category,
+    search = "",
+    selectedSortby,
+    selectedSortdir
+  ) {
     setCurrentPage(page);
     setCategory(category);
+    // setSortby(selectedSortby);
+    // setSortdir(selectedSortdir);
     try {
       const response = await api.get("/products", {
         params: {
@@ -50,6 +58,8 @@ export default function ProductPage() {
           limit: parseInt(itemsPerPage),
           category_id: category,
           search,
+          sortby: selectedSortby,
+          sortdir: selectedSortdir,
         },
       });
       console.log(response.data);
@@ -70,9 +80,11 @@ export default function ProductPage() {
     }
   }
 
-  // const handlePageChange = (page) => {
-  //   setCurrentPage(page);
-  // };
+  const handleSortChange = (selectedSortby, selectedSortdir) => {
+    console.log(selectedSortby, selectedSortdir);
+
+    fetchProduct(currentPage, category, "", selectedSortby, selectedSortdir);
+  };
 
   const renderPagination = () => {
     const pages = [];
@@ -124,7 +136,11 @@ export default function ProductPage() {
                 color={"white"}
               ></IconButton>
               <Button bg={"white"}>Product</Button>
-              <CreateProduct isOpen={isOpen} onClose={onClose} />
+              <CreateProduct
+                isOpen={isOpen}
+                onClose={onClose}
+                fetchProduct={fetchProduct}
+              />
             </ButtonGroup>
           </Flex>
 
@@ -149,16 +165,28 @@ export default function ProductPage() {
               />
               <TabPanels>
                 <TabPanel id="all">
-                  <ProductList products={products} />
+                  <ProductList
+                    products={products}
+                    handleSortChange={handleSortChange}
+                  />
                 </TabPanel>
                 <TabPanel id="pizza">
-                  <ProductList products={products} />
+                  <ProductList
+                    products={products}
+                    handleSortChange={handleSortChange}
+                  />
                 </TabPanel>
                 <TabPanel id="pasta">
-                  <ProductList products={products} />
+                  <ProductList
+                    products={products}
+                    handleSortChange={handleSortChange}
+                  />
                 </TabPanel>
                 <TabPanel id="drinks">
-                  <ProductList products={products} />
+                  <ProductList
+                    products={products}
+                    handleSortChange={handleSortChange}
+                  />
                 </TabPanel>
               </TabPanels>
             </Tabs>

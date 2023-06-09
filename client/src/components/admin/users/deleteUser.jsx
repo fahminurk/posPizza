@@ -11,14 +11,14 @@ import {
   Box,
   Flex,
 } from "@chakra-ui/react";
-import { api } from "../api/api";
+import { api } from "../../../api/api";
+import { useEffect } from "react";
 
-export function DeleteProduct(props) {
+export function DeleteUser(props) {
   //   console.log(props);
-  const deleteProduct = async () => {
-    await api.delete("/products/" + props.id);
+  const deleteUser = async () => {
+    await api.delete("/users/" + props.id);
     alert("deleted");
-    props.onClose();
   };
 
   return (
@@ -33,7 +33,14 @@ export function DeleteProduct(props) {
           </ModalBody>
           <ModalFooter gap={5}>
             <Button onClick={props.onClose}>Cancel</Button>
-            <Button onClick={deleteProduct}>Delete</Button>
+            <Button
+              onClick={() => {
+                deleteUser();
+                props.onClose();
+              }}
+            >
+              Delete
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

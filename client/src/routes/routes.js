@@ -1,7 +1,6 @@
 import { Route } from "react-router-dom";
 import ProtectedPage from "./protectedPage";
 import LoginPage from "../pages/loginPage";
-import TestPage from "../pages/testPage";
 import ProductPage from "../pages/ProductPage";
 import DashboardAdminPage from "../pages/dashboardAdminPage";
 import CategoryPage from "../pages/categoryPage";
@@ -70,8 +69,6 @@ const routes = [
       </ProtectedPage>
     }
   />,
-
-  <Route path="/test" element={<TestPage />} />,
 
   <Route
     path="/*"

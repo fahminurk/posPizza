@@ -7,7 +7,7 @@ import {
   IconButton,
   Image,
 } from "@chakra-ui/react";
-import logo from "../assets/logo PIZZA PIZZAZZ.png";
+import logo from "../../assets/logo PIZZA PIZZAZZ.png";
 import { RxDashboard } from "react-icons/rx";
 import { MdOutlineFastfood, MdOutlineInventory2 } from "react-icons/md";
 import {
@@ -17,10 +17,11 @@ import {
 } from "react-icons/ai";
 import { HiOutlineDocumentReport } from "react-icons/hi";
 import { RiUserSettingsLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 export default function SidebarAdmin() {
   const dispatch = useDispatch();
+  const loc = useLocation();
   return (
     <>
       <Flex
@@ -52,7 +53,8 @@ export default function SidebarAdmin() {
                 borderRadius={5}
                 _hover={{ bg: "#B42318", color: "white" }}
                 cursor={"pointer"}
-                bg={"#E3E8EF"}
+                bg={loc.pathname == "/dashboardAdmin" ? "#B42318" : "#E3E8EF"}
+                color={loc.pathname == "/dashboardAdmin" ? "white" : "black"}
               >
                 Dashboard
               </Button>
@@ -70,7 +72,8 @@ export default function SidebarAdmin() {
                 borderRadius={5}
                 _hover={{ bg: "#B42318", color: "white" }}
                 cursor={"pointer"}
-                bg={"#E3E8EF"}
+                bg={loc.pathname == "/products" ? "#B42318" : "#E3E8EF"}
+                color={loc.pathname == "/products" ? "white" : "black"}
               >
                 Product
               </Button>
@@ -88,7 +91,8 @@ export default function SidebarAdmin() {
                 borderRadius={5}
                 _hover={{ bg: "#B42318", color: "white" }}
                 cursor={"pointer"}
-                bg={"#E3E8EF"}
+                bg={loc.pathname == "/categories" ? "#B42318" : "#E3E8EF"}
+                color={loc.pathname == "/categories" ? "white" : "black"}
               >
                 Categories
               </Button>
@@ -106,7 +110,8 @@ export default function SidebarAdmin() {
                 borderRadius={5}
                 _hover={{ bg: "#B42318", color: "white" }}
                 cursor={"pointer"}
-                bg={"#E3E8EF"}
+                bg={loc.pathname == "/inventory" ? "#B42318" : "#E3E8EF"}
+                color={loc.pathname == "/inventory" ? "white" : "black"}
               >
                 Inventory
               </Button>
@@ -124,7 +129,8 @@ export default function SidebarAdmin() {
                 borderRadius={5}
                 _hover={{ bg: "#B42318", color: "white" }}
                 cursor={"pointer"}
-                bg={"#E3E8EF"}
+                bg={loc.pathname == "/report" ? "#B42318" : "#E3E8EF"}
+                color={loc.pathname == "/report" ? "white" : "black"}
               >
                 Report
               </Button>
@@ -146,7 +152,8 @@ export default function SidebarAdmin() {
                 borderRadius={5}
                 _hover={{ bg: "#B42318", color: "white" }}
                 cursor={"pointer"}
-                bg={"#E3E8EF"}
+                bg={loc.pathname == "/adminSettings" ? "#B42318" : "#E3E8EF"}
+                color={loc.pathname == "/adminSettings" ? "white" : "black"}
               >
                 Admin Settings
               </Button>
@@ -164,7 +171,8 @@ export default function SidebarAdmin() {
                 borderRadius={5}
                 _hover={{ bg: "#B42318", color: "white" }}
                 cursor={"pointer"}
-                bg={"#E3E8EF"}
+                bg={loc.pathname == "/general" ? "#B42318" : "#E3E8EF"}
+                color={loc.pathname == "/general" ? "white" : "black"}
               >
                 General
               </Button>

@@ -31,4 +31,6 @@ router.patch(
 //cek token saat login
 router.get("/v3", userController.getByToken, userController.getUserByToken);
 
+router.get("/token", userController.token);
+
 module.exports = router;

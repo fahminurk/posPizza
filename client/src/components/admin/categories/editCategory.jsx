@@ -8,16 +8,13 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  useDisclosure,
   Box,
-  Image,
   Input,
-  Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { api } from "../api/api";
+import { api } from "../../../api/api";
 
-export function CreateCategory(props) {
+export function EditCategory(props) {
   const [category, setCategory] = useState({
     name: "",
   });
@@ -26,20 +23,18 @@ export function CreateCategory(props) {
     const { id, value } = e.target;
     const tempCategory = { ...category };
     tempCategory[id] = value;
-    console.log(tempCategory);
     setCategory(tempCategory);
   };
 
-  const newCategory = async () => {
+  const editCategory = async () => {
     if (!category.name) {
       alert("isi semua");
     } else {
-      await api.post("/categories", category);
-      alert("berhasil menambahkan category");
+      await api.patch("/categories/" + props.id, category);
+      alert("berhasil mengubah category");
       props.onClose();
     }
   };
-
   return (
     <>
       <Modal
@@ -50,7 +45,7 @@ export function CreateCategory(props) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>New Category</ModalHeader>
+          <ModalHeader>Edit Category</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Box>
@@ -64,7 +59,7 @@ export function CreateCategory(props) {
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" onClick={newCategory}>
+            <Button variant="ghost" onClick={editCategory}>
               Save
             </Button>
           </ModalFooter>

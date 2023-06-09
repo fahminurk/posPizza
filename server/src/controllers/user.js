@@ -65,6 +65,16 @@ const userController = {
       const hashPassword = await bcrypt.hash(password, 10);
       const { filename } = req.file;
 
+      let findEmail = await db.User.findOne({
+        where: {
+          email,
+        },
+      });
+
+      if (findEmail) {
+        res.send({ message: "email alredy exists" });
+      }
+
       await db.User.create({
         name,
         email,
@@ -202,6 +212,9 @@ const userController = {
   getUserByToken: async (req, res) => {
     delete req.user.password;
     res.send(req.user);
+  },
+  token: async (req, res) => {
+    await db.Token.findAll().then((result) => res.send(result));
   },
 };
 

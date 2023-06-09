@@ -10,12 +10,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
-import NavbarAdmin from "../components/navbarAdmin";
-import SidebarAdmin from "../components/sidebarAdmin";
+import NavbarAdmin from "../components/admin/navbarAdmin";
+import SidebarAdmin from "../components/admin/sidebarAdmin";
 import { AiOutlinePlus } from "react-icons/ai";
-import PaymentMethods from "../components/paymentMethods";
-import ItemSales from "../components/itemSales";
-import CategorySales from "../components/categorySales";
+import PaymentMethods from "../components/admin/report/paymentMethods";
+import ItemSales from "../components/admin/report/itemSales";
+import CategorySales from "../components/admin/report/categorySales";
 
 export default function ReportPage() {
   return (

@@ -14,12 +14,12 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import iconphoto from "../assets/icon.png";
+import iconphoto from "../../../assets/icon.png";
 import { useEffect, useRef, useState } from "react";
-import { api } from "../api/api";
+import { api } from "../../../api/api";
 
-export function CreateProduct(props) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+export function EditProduct(props) {
+  // console.log(props);
   const [category, setCategory] = useState([]);
   const [SelectedFile, setSelectedFile] = useState(null);
   const inputFileRef = useRef(null);
@@ -31,7 +31,6 @@ export function CreateProduct(props) {
   });
   const [image, setImage] = useState(iconphoto);
 
-  //input
   const inputHandler = (e) => {
     const { id, value } = e.target;
     const tempProduct = { ...product };
@@ -51,35 +50,35 @@ export function CreateProduct(props) {
     getCategory();
   }, []);
 
-  // function new product
-  const newProduct = async () => {
-    try {
-      if (
-        !(
-          product.name &&
-          product.description &&
-          product.price &&
-          product.category_id &&
-          SelectedFile
-        )
-      ) {
-        alert("isi semua");
-      } else {
-        const formData = new FormData();
-        formData.append("product", SelectedFile);
-        formData.append("name", product.name);
-        formData.append("description", product.description);
-        formData.append("price", product.price);
-        formData.append("category_id", product.category_id);
+  //
+  const editProduct = async () => {
+    // try {
+    if (
+      !(
+        product.name &&
+        product.description &&
+        product.price &&
+        product.category_id &&
+        SelectedFile
+      )
+    ) {
+      alert("isi semua");
+    } else {
+      const formData = new FormData();
+      formData.append("product", SelectedFile);
+      formData.append("name", product.name);
+      formData.append("description", product.description);
+      formData.append("price", product.price);
+      formData.append("category_id", product.category_id);
 
-        await api.post("/products/newProduct", formData);
+      await api.patch("/products/" + props.id, formData);
 
-        alert("berhasil menambahkan produk");
-        props.onClose();
-      }
-    } catch (err) {
-      console.log(err.message);
+      alert("berhasil mengubah produk");
+      props.onClose();
     }
+    // } catch (err) {
+    //   console.log(err.message);
+    // }
   };
 
   const handleFile = (event) => {
@@ -90,10 +89,16 @@ export function CreateProduct(props) {
 
   return (
     <>
-      <Modal isOpen={props.isOpen} onClose={props.onClose}>
+      <Modal
+        isOpen={props.isOpen}
+        onClose={() => {
+          setImage(iconphoto);
+          props.onClose();
+        }}
+      >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>new product</ModalHeader>
+          <ModalHeader>Edit Product</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Flex justifyContent={"space-between"} alignItems={"center"}>
@@ -106,7 +111,7 @@ export function CreateProduct(props) {
                 // id="product_url"
               />
               <Image
-                src={image}
+                src={!SelectedFile ? props.product_url : image}
                 w={"100px"}
                 h={"100px"}
                 onClick={() => {
@@ -115,18 +120,30 @@ export function CreateProduct(props) {
               />
               <Flex flexDir={"column"} w={"70%"}>
                 Product Name
-                <Input id="name" onChange={inputHandler} />
+                <Input
+                  id="name"
+                  placeholder={props.name}
+                  onChange={inputHandler}
+                />
                 Price
-                <Input id="price" onChange={inputHandler} />
+                <Input
+                  id="price"
+                  placeholder={props.price}
+                  onChange={inputHandler}
+                />
               </Flex>
             </Flex>
             <Box>
               Description
-              <Input id="description" onChange={inputHandler} />
+              <Input
+                id="description"
+                placeholder={props.description}
+                onChange={inputHandler}
+              />
             </Box>
             <Box pt={5}>
               <Select
-                placeholder="Pilih category.."
+                placeholder={props.category_id}
                 id="category_id"
                 onChange={inputHandler}
               >
@@ -140,19 +157,7 @@ export function CreateProduct(props) {
           </ModalBody>
 
           <ModalFooter>
-            {/* <Button colorScheme="blue" mr={3} onClick={() => props.onClose()}>
-          Close
-        </Button> */}
-
-            <Button
-              bg={"#B42318"}
-              color={"white"}
-              variant="ghost"
-              _hover={{ color: "black", bg: "#EEF2F6" }}
-              onClick={() => {
-                newProduct();
-              }}
-            >
+            <Button variant="ghost" onClick={editProduct}>
               Save
             </Button>
           </ModalFooter>

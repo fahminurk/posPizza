@@ -15,25 +15,26 @@ import {
   Select,
   Avatar,
 } from "@chakra-ui/react";
-import iconphoto from "../assets/icon.png";
+import iconphoto from "../../../assets/icon.png";
 import { useEffect, useRef, useState } from "react";
-import { api } from "../api/api";
+import { api } from "../../../api/api";
 
-export function CreateUser(props) {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
+export function EditUser(props) {
+  const { name, password, email, phone, role, avatar_url } = props;
   const [SelectedFile, setSelectedFile] = useState(null);
   const inputFileRef = useRef(null);
   const [user, setUser] = useState({
-    name: "",
-    password: "",
-    email: "",
-    phone: "",
-    role: "",
+    name,
+    password,
+    email,
+    phone,
+    role,
+    avatar_url,
   });
-  const [image, setImage] = useState(null);
-  console.log(image);
-  //input
+  const [image, setImage] = useState(iconphoto);
+
+  // console.log(user);
+
   const inputHandler = (e) => {
     const { id, value } = e.target;
     const tempUser = { ...user };
@@ -42,16 +43,16 @@ export function CreateUser(props) {
     setUser(tempUser);
   };
 
-  // function new product
-  const newUser = async () => {
+  //
+  const editUser = async () => {
     try {
       if (
         !(
           user.name &&
           user.password &&
-          user.role &&
           user.email &&
           user.phone &&
+          user.role &&
           SelectedFile
         )
       ) {
@@ -59,15 +60,16 @@ export function CreateUser(props) {
       } else {
         const formData = new FormData();
         formData.append("avatar", SelectedFile);
+
         formData.append("name", user.name);
+        formData.append("email", user.email);
         formData.append("password", user.password);
         formData.append("role", user.role);
-        formData.append("email", user.email);
         formData.append("phone", user.phone);
+        await api.patch("/users/" + props.id, formData);
 
-        await api.post("/users/register", formData);
-
-        alert(`berhasil membuat ${user.role} baru`);
+        alert("berhasil mengubah user");
+        props.onClose();
       }
     } catch (err) {
       console.log(err.message);
@@ -82,10 +84,16 @@ export function CreateUser(props) {
 
   return (
     <>
-      <Modal isOpen={props.isOpen} onClose={props.onClose}>
+      <Modal
+        isOpen={props.isOpen}
+        onClose={() => {
+          setImage(iconphoto);
+          props.onClose();
+        }}
+      >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>New User</ModalHeader>
+          <ModalHeader>Edit User</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Flex justifyContent={"space-between"} alignItems={"center"}>
@@ -95,9 +103,10 @@ export function CreateUser(props) {
                 ref={inputFileRef}
                 type="file"
                 display="none"
+                // id="product_url"
               />
               <Avatar
-                src={image}
+                src={!SelectedFile ? props.avatar_url : image}
                 w={"100px"}
                 h={"100px"}
                 onClick={() => {
@@ -106,24 +115,40 @@ export function CreateUser(props) {
               />
               <Flex flexDir={"column"} w={"70%"}>
                 FullName
-                <Input id="name" onChange={inputHandler} />
+                <Input
+                  id="name"
+                  defaultValue={props.name}
+                  onChange={inputHandler}
+                />
                 Password
-                <Input id="password" onChange={inputHandler} />
+                <Input
+                  id="newPassword"
+                  // defaultValue={props.password}
+                  onChange={inputHandler}
+                />
               </Flex>
             </Flex>
             <Box>
               email
-              <Input id="email" onChange={inputHandler} />
+              <Input
+                id="email"
+                defaultValue={props.email}
+                onChange={inputHandler}
+              />
             </Box>
             <Box>
               phone
-              <Input id="phone" onChange={inputHandler} />
+              <Input
+                id="phone"
+                defaultValue={props.phone}
+                onChange={inputHandler}
+              />
             </Box>
             <Box pt={5}>
               <Select
-                placeholder="pilih role"
                 id="role"
                 onChange={inputHandler}
+                defaultValue={props.role}
               >
                 <option>ADMIN</option>
                 <option>CASHIER</option>
@@ -132,20 +157,7 @@ export function CreateUser(props) {
           </ModalBody>
 
           <ModalFooter>
-            {/* <Button colorScheme="blue" mr={3} onClick={() => props.onClose()}>
-          Close
-        </Button> */}
-
-            <Button
-              bg={"#B42318"}
-              color={"white"}
-              variant="ghost"
-              _hover={{ color: "black", bg: "#EEF2F6" }}
-              onClick={() => {
-                newUser();
-                props.onClose();
-              }}
-            >
+            <Button variant="ghost" onClick={editUser}>
               Save
             </Button>
           </ModalFooter>

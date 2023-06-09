@@ -13,13 +13,13 @@ import {
 } from "@chakra-ui/react";
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
-import NavbarAdmin from "../components/navbarAdmin";
-import SidebarAdmin from "../components/sidebarAdmin";
+import NavbarAdmin from "../components/admin/navbarAdmin";
+import SidebarAdmin from "../components/admin/sidebarAdmin";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import { SearchBarProduct } from "../components/SearchBarProduct";
-import { CreateUser } from "../components/createUser";
-import UserList from "../components/userList";
+// import { SearchBarProduct } from "../components/SearchBarProduct";
+import { CreateUser } from "../components/admin/users/createUser";
+import UserList from "../components/admin/users/userList";
 import { FiSearch } from "react-icons/fi";
 
 export default function AdminSettings() {

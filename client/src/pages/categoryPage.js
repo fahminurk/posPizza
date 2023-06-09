@@ -12,14 +12,14 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
-import NavbarAdmin from "../components/navbarAdmin";
-import SidebarAdmin from "../components/sidebarAdmin";
+import NavbarAdmin from "../components/admin/navbarAdmin";
+import SidebarAdmin from "../components/admin/sidebarAdmin";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-import { CreateProduct } from "../components/createProduct";
+import { CreateProduct } from "../components/admin/products/createProduct";
 import { FiSearch } from "react-icons/fi";
-import { CreateCategory } from "../components/createCategory";
-import CategoryList from "../components/categoryList";
+import { CreateCategory } from "../components/admin/categories/createCategory";
+import CategoryList from "../components/admin/categories/categoryList";
 
 export default function CategoryPage() {
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -106,7 +106,11 @@ export default function CategoryPage() {
                 color={"white"}
               ></IconButton>
               <Button bg={"white"}>Category</Button>
-              <CreateCategory isOpen={isOpen} onClose={onClose} />
+              <CreateCategory
+                isOpen={isOpen}
+                onClose={onClose}
+                fetchCategory={fetchCategory}
+              />
             </ButtonGroup>
           </Flex>
 

@@ -1,3 +1,11 @@
+import NavbarCashier from "../components/cashier/navbarCashier";
+import SidebarCashier from "../components/cashier/sidebarCashier";
+
 export default function DashboardCashier() {
-  return;
+  return (
+    <>
+      <NavbarCashier />
+      <SidebarCashier />
+    </>
+  );
 }

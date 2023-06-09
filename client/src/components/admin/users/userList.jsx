@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   Center,
@@ -10,19 +11,19 @@ import {
 import { Table, Thead, Tbody, Tr, Th, Td } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import { useEffect, useState } from "react";
-import { api } from "../api/api";
-import { EditProduct } from "./editProduct";
-import { DeleteProduct } from "./deleteProduct";
-
-export default function ProductList({ products }) {
-  const [editProductId, setEditProductId] = useState(null);
-  const [deleteProductId, setDeleteProductId] = useState(null);
+import { api } from "../../../api/api";
+import { DeleteUser } from "./deleteUser";
+import { EditUser } from "./editUser";
+export default function UserList({ users }) {
+  const [editUserId, setEditUserId] = useState(null);
+  const [deleteUserId, setDeleteUserId] = useState(null);
   const [name, setName] = useState(null);
-  const [price, setPrice] = useState(null);
-  const [description, setDescription] = useState(null);
-  const [category_id, setCategory_id] = useState(null);
-  const [product_url, setProduct_url] = useState(null);
-  console.log(products);
+  const [email, setEmail] = useState(null);
+  const [avatar_url, setAvatar_url] = useState(null);
+  const [phone, setPhone] = useState(null);
+  const [role, setRole] = useState(null);
+  const [password, setPassword] = useState(null);
+
   const modalEdit = useDisclosure();
   const modalDelete = useDisclosure();
 
@@ -32,27 +33,26 @@ export default function ProductList({ products }) {
         <Thead>
           <Tr>
             <Th w={"5%"}>No</Th>
-            <Th w={"10%"}>Image</Th>
-            <Th w={"30%"}>Name</Th>
-            <Th w={"20%"}>Category</Th>
-            <Th w={"15%"}>Price</Th>
-            <Th color={"white"}>status</Th>
-            <Th w={"10%"} color={"white"}>
-              {" "}
-              edit
-            </Th>
+            <Th w={"5%"}>Image</Th>
+            <Th w={"25%"}>Name</Th>
+            <Th w={"15%"}>role</Th>
+            <Th w={"20%"}>email</Th>
+            <Th w={"20%"}> phone</Th>
+            <Th w={"10%"}>Status</Th>
+            <Th>edit</Th>
           </Tr>
         </Thead>
         <Tbody>
-          {products?.map((val) => (
+          {users?.map((val) => (
             <Tr key={val.id}>
               <Td>{val.id}</Td>
               <Td>
-                <Image src={val.product_url} w={"100px"} h={"70px"} />
+                <Avatar src={val.avatar_url} size={"md"} />
               </Td>
               <Td>{val.name}</Td>
-              <Td>{val.Category.name}</Td>
-              <Td>Rp. {val.price}</Td>
+              <Td>{val.role}</Td>
+              <Td>{val.email}</Td>
+              <Td>{val.phone}</Td>
               <Td>
                 <Switch
                   defaultChecked={val?.status == "AVAILABLE" ? true : false}
@@ -66,30 +66,33 @@ export default function ProductList({ products }) {
                     size="sm"
                     variant="ghost"
                     onClick={() => {
-                      setEditProductId(val.id);
+                      setEditUserId(val.id);
+
                       setName(val.name);
-                      setPrice(val.price);
-                      setDescription(val.description);
-                      setCategory_id(val.category_id);
-                      setProduct_url(val.product_url);
+                      setEmail(val.email);
+                      setPhone(val.phone);
+                      setAvatar_url(val.avatar_url);
+                      setPassword(val.password);
+                      setRole(val.role);
                       modalEdit.onOpen();
                     }}
                   >
                     {<EditIcon />}
-                    <EditProduct
-                      id={editProductId}
+                    <EditUser
+                      id={editUserId}
                       isOpen={modalEdit.isOpen}
                       onClose={modalEdit.onClose}
                       name={name}
-                      price={price}
-                      description={description}
-                      category_id={category_id}
-                      product_url={product_url}
+                      email={email}
+                      avatar_url={avatar_url}
+                      phone={phone}
+                      password={password}
+                      role={role}
                     />
                   </Button>
                   <Button
                     onClick={() => {
-                      setDeleteProductId(val.id);
+                      setDeleteUserId(val.id);
 
                       modalDelete.onOpen();
                     }}
@@ -98,8 +101,8 @@ export default function ProductList({ products }) {
                     variant="ghost"
                   >
                     {<DeleteIcon />}
-                    <DeleteProduct
-                      id={deleteProductId}
+                    <DeleteUser
+                      id={deleteUserId}
                       isOpen={modalDelete.isOpen}
                       onClose={modalDelete.onClose}
                     />

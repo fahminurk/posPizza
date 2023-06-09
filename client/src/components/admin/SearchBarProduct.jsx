@@ -1,7 +1,7 @@
 import { Input, InputGroup, InputLeftElement } from "@chakra-ui/react";
 import { useState } from "react";
 import { FiSearch } from "react-icons/fi";
-import { api } from "../api/api";
+import { api } from "../../api/api";
 export function SearchBarProduct(props) {
   const [input, setInput] = useState("");
   console.log(props);
