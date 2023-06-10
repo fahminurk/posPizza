@@ -17,12 +17,6 @@ import { EditUser } from "./editUser";
 export default function UserList({ users }) {
   const [editUserId, setEditUserId] = useState(null);
   const [deleteUserId, setDeleteUserId] = useState(null);
-  const [name, setName] = useState(null);
-  const [email, setEmail] = useState(null);
-  const [avatar_url, setAvatar_url] = useState(null);
-  const [phone, setPhone] = useState(null);
-  const [role, setRole] = useState(null);
-  const [password, setPassword] = useState(null);
 
   const modalEdit = useDisclosure();
   const modalDelete = useDisclosure();
@@ -67,13 +61,6 @@ export default function UserList({ users }) {
                     variant="ghost"
                     onClick={() => {
                       setEditUserId(val.id);
-
-                      setName(val.name);
-                      setEmail(val.email);
-                      setPhone(val.phone);
-                      setAvatar_url(val.avatar_url);
-                      setPassword(val.password);
-                      setRole(val.role);
                       modalEdit.onOpen();
                     }}
                   >
@@ -82,12 +69,6 @@ export default function UserList({ users }) {
                       id={editUserId}
                       isOpen={modalEdit.isOpen}
                       onClose={modalEdit.onClose}
-                      name={name}
-                      email={email}
-                      avatar_url={avatar_url}
-                      phone={phone}
-                      password={password}
-                      role={role}
                     />
                   </Button>
                   <Button

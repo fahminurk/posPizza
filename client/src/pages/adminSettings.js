@@ -17,7 +17,6 @@ import NavbarAdmin from "../components/admin/navbarAdmin";
 import SidebarAdmin from "../components/admin/sidebarAdmin";
 import { useEffect, useState } from "react";
 import { api } from "../api/api";
-// import { SearchBarProduct } from "../components/SearchBarProduct";
 import { CreateUser } from "../components/admin/users/createUser";
 import UserList from "../components/admin/users/userList";
 import { FiSearch } from "react-icons/fi";

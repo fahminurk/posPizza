@@ -5,7 +5,7 @@ module.exports = (sequelize, Sequelize) => {
       name: {
         type: Sequelize.STRING,
       },
-      
+
       status: {
         type: Sequelize.ENUM("AVAILABLE", "UNAVAILABLE"),
       },

@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
       },
       price: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
       },
       product_url: {
         type: Sequelize.STRING,
@@ -17,6 +17,9 @@ module.exports = (sequelize, Sequelize) => {
       // categori_id: Sequelize.INTEGER,
       status: {
         type: Sequelize.ENUM("AVAILABLE", "UNAVAILABLE"),
+      },
+      stock: {
+        type: Sequelize.STRING,
       },
     },
 

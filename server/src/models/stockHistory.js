@@ -1,6 +1,6 @@
 module.exports = (sequelize, Sequelize) => {
-  const HistoryStock = sequelize.define(
-    "HistoryStocks",
+  const StockHistory = sequelize.define(
+    "StockHistories",
     {
       // product_id: Sequelize.INTEGER,
       status: {
@@ -17,5 +17,5 @@ module.exports = (sequelize, Sequelize) => {
       paranoid: true,
     }
   );
-  return HistoryStock;
+  return StockHistory;
 };

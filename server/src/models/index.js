@@ -50,16 +50,24 @@ db.Sequelize = Sequelize;
 db.User = require("./user")(sequelize, Sequelize);
 db.Token = require("./token")(sequelize, Sequelize);
 db.Category = require("./category")(sequelize, Sequelize);
-db.HistoryStock = require("./historyStock")(sequelize, Sequelize);
+db.StockHistory = require("./stockHistory")(sequelize, Sequelize);
 db.Product = require("./product")(sequelize, Sequelize);
-db.Stock = require("./stock")(sequelize, Sequelize);
-db.Transaction = require("./transaction")(sequelize, Sequelize);
-db.TransactionDetail = require("./transactionDetail")(sequelize, Sequelize);
+db.Order = require("./order")(sequelize, Sequelize);
+db.OrderDetails = require("./orderDetails")(sequelize, Sequelize);
 
 db.Product.belongsTo(db.Category, {
   foreignKey: "category_id",
 });
-db.Stock.belongsTo(db.Product, {
+db.OrderDetails.belongsTo(db.Order, {
+  foreignKey: "order_id",
+});
+db.Order.belongsTo(db.Product, {
+  foreignKey: "product_id",
+});
+db.Order.belongsTo(db.User, {
+  foreignKey: "user_id",
+});
+db.StockHistory.belongsTo(db.Product, {
   foreignKey: "product_id",
 });
 

@@ -20,20 +20,18 @@ import { useEffect, useRef, useState } from "react";
 import { api } from "../../../api/api";
 
 export function EditUser(props) {
-  const { name, password, email, phone, role, avatar_url } = props;
   const [SelectedFile, setSelectedFile] = useState(null);
   const inputFileRef = useRef(null);
   const [user, setUser] = useState({
-    name,
-    password,
-    email,
-    phone,
-    role,
-    avatar_url,
+    name: "",
+    password: "",
+    email: "",
+    phone: "",
+    role: "",
   });
   const [image, setImage] = useState(iconphoto);
 
-  // console.log(user);
+  console.log(user);
 
   const inputHandler = (e) => {
     const { id, value } = e.target;
@@ -106,7 +104,7 @@ export function EditUser(props) {
                 // id="product_url"
               />
               <Avatar
-                src={!SelectedFile ? props.avatar_url : image}
+                src={image}
                 w={"100px"}
                 h={"100px"}
                 onClick={() => {
@@ -115,41 +113,21 @@ export function EditUser(props) {
               />
               <Flex flexDir={"column"} w={"70%"}>
                 FullName
-                <Input
-                  id="name"
-                  defaultValue={props.name}
-                  onChange={inputHandler}
-                />
+                <Input id="name" onChange={inputHandler} />
                 Password
-                <Input
-                  id="newPassword"
-                  // defaultValue={props.password}
-                  onChange={inputHandler}
-                />
+                <Input id="password" onChange={inputHandler} />
               </Flex>
             </Flex>
             <Box>
               email
-              <Input
-                id="email"
-                defaultValue={props.email}
-                onChange={inputHandler}
-              />
+              <Input id="email" onChange={inputHandler} />
             </Box>
             <Box>
               phone
-              <Input
-                id="phone"
-                defaultValue={props.phone}
-                onChange={inputHandler}
-              />
+              <Input id="phone" onChange={inputHandler} />
             </Box>
             <Box pt={5}>
-              <Select
-                id="role"
-                onChange={inputHandler}
-                defaultValue={props.role}
-              >
+              <Select id="role" onChange={inputHandler}>
                 <option>ADMIN</option>
                 <option>CASHIER</option>
               </Select>

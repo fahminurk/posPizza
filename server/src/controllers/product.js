@@ -74,15 +74,6 @@ const productController = {
         },
       };
 
-      // const whereClause = {
-      //   name: {
-      //     [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
-      //   },
-      //   price: {
-      //     [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
-      //   },
-      // };
-
       if (category_id) {
         whereClause.category_id = category_id;
       }
