@@ -14,9 +14,9 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import iconphoto from "../../../assets/icon.png";
+import iconphoto from "../../assets/icon.png";
 import { useEffect, useRef, useState } from "react";
-import { api } from "../../../api/api";
+import { api } from "../../api/api";
 
 export function EditProduct(props) {
   // console.log(props);
@@ -74,7 +74,7 @@ export function EditProduct(props) {
       await api.patch("/products/" + props.id, formData);
 
       alert("berhasil mengubah produk");
-      props.onClose();
+      props.fetch();
     }
     // } catch (err) {
     //   console.log(err.message);
@@ -157,7 +157,13 @@ export function EditProduct(props) {
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" onClick={editProduct}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                editProduct();
+                props.onClose();
+              }}
+            >
               Save
             </Button>
           </ModalFooter>

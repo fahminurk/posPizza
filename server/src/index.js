@@ -17,6 +17,8 @@ app.get("/", (req, res) => res.send("test"));
 app.use("/users", routes.userRoutes);
 app.use("/products", routes.productRoutes);
 app.use("/categories", routes.categoryRoutes);
+app.use("/orders", routes.orderRoutes);
+app.use("/orderDetails", routes.orderDetailRoutes);
 app.use("/imageProduct", express.static(`${__dirname}/public/product`)); // ngeset gambar product ke folder product
 app.use("/avatarUser", express.static(`${__dirname}/public/avatar`)); // ngeset gambar user ke folder user
 

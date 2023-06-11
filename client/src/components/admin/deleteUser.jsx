@@ -11,7 +11,7 @@ import {
   Box,
   Flex,
 } from "@chakra-ui/react";
-import { api } from "../../../api/api";
+import { api } from "../../api/api";
 import { useEffect } from "react";
 
 export function DeleteUser(props) {
@@ -19,6 +19,7 @@ export function DeleteUser(props) {
   const deleteUser = async () => {
     await api.delete("/users/" + props.id);
     alert("deleted");
+    props.fetch();
   };
 
   return (

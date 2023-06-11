@@ -13,28 +13,26 @@ const categoryController = {
     }
   },
   getAllCategory: async (req, res) => {
+    const { search, sortby, sortdir } = req.query;
+    const order = [];
+    if (sortby && sortdir) {
+      order.push([sortby, sortdir]);
+    }
     try {
-      const { page, limit, search } = req.query;
-      const currentPage = page || 1;
-      const itemsPerPage = limit || 10;
-      const offset = (currentPage - 1) * itemsPerPage;
-
-      const { count, rows } = await db.Category.findAndCountAll({
-        limit: parseInt(itemsPerPage),
-        offset,
+      await db.Category.findAll({
+        order,
         where: {
           name: {
             [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
           },
         },
-      });
-      const totalPages = Math.ceil(count / itemsPerPage);
-      return res.send({ category: rows, totalPages });
+      }).then((result) => res.send(result));
     } catch (err) {
       console.log(err.message);
       return res.status(500).send(err.message);
     }
   },
+
   deleteCategory: async (req, res) => {
     try {
       await db.Category.destroy({

@@ -7,53 +7,21 @@ const avatarUser = process.env.avatarUser;
 const userController = {
   getAllUser: async (req, res) => {
     try {
-      const { page, limit, search, role } = req.query;
-      const currentPage = page || 1;
-      const itemsPerPage = limit || 10;
-      const offset = (currentPage - 1) * itemsPerPage;
+      const { search, sortby, sortdir } = req.query;
+      const order = [];
 
-      const { count, rows } = role
-        ? await db.User.findAndCountAll({
-            limit: parseInt(itemsPerPage),
-            offset,
+      if (sortby && sortdir) {
+        order.push([sortby, sortdir]);
+      }
 
-            where: {
-              name: {
-                [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
-              },
-              role: role ? role : null,
-            },
-          })
-        : await db.User.findAndCountAll({
-            limit: parseInt(itemsPerPage),
-            offset,
-
-            where: {
-              name: {
-                [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
-              },
-            },
-          });
-      const totalPages = Math.ceil(count / itemsPerPage);
-      const { count: all } = await db.User.findAndCountAll();
-      const { count: admin } = await db.User.findAndCountAll({
+      await db.User.findAll({
+        order,
         where: {
-          role: "ADMIN",
+          name: {
+            [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
+          },
         },
-      });
-      const { count: cashier } = await db.User.findAndCountAll({
-        where: {
-          role: "CASHIER",
-        },
-      });
-
-      return res.send({
-        users: rows,
-        totalPages,
-        all,
-        admin,
-        cashier,
-      });
+      }).then((result) => res.send(result));
     } catch (err) {
       console.log(err.message);
       return res.status(500).send(err.message);
@@ -219,3 +187,58 @@ const userController = {
 };
 
 module.exports = userController;
+
+//  getAllUser: async (req, res) => {
+//     try {
+//       const { page, limit, search, role } = req.query;
+//       const currentPage = page || 1;
+//       const itemsPerPage = limit || 10;
+//       const offset = (currentPage - 1) * itemsPerPage;
+
+//       const { count, rows } = role
+//         ? await db.User.findAndCountAll({
+//             limit: parseInt(itemsPerPage),
+//             offset,
+
+//             where: {
+//               name: {
+//                 [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
+//               },
+//               role: role ? role : null,
+//             },
+//           })
+//         : await db.User.findAndCountAll({
+//             limit: parseInt(itemsPerPage),
+//             offset,
+
+//             where: {
+//               name: {
+//                 [db.Sequelize.Op.like]: `%${search ? search : ""}%`,
+//               },
+//             },
+//           });
+//       const totalPages = Math.ceil(count / itemsPerPage);
+//       const { count: all } = await db.User.findAndCountAll();
+//       const { count: admin } = await db.User.findAndCountAll({
+//         where: {
+//           role: "ADMIN",
+//         },
+//       });
+//       const { count: cashier } = await db.User.findAndCountAll({
+//         where: {
+//           role: "CASHIER",
+//         },
+//       });
+
+//       return res.send({
+//         users: rows,
+//         totalPages,
+//         all,
+//         admin,
+//         cashier,
+//       });
+//     } catch (err) {
+//       console.log(err.message);
+//       return res.status(500).send(err.message);
+//     }
+//   },

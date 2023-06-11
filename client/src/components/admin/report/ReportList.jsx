@@ -41,8 +41,8 @@ import {
 import { BiDotsVertical } from "react-icons/bi";
 import calculateSalesMetrics from "../salesMetrics";
 // import IconCalendar from "../assets/IconCalendar.png";
-import CalculatePerssentage from "../CalculatePerssentage";
-import CalculateRatio from "../CalculatePerssentage";
+import CalculatePerssentage from "./CalculatePerssentage";
+import CalculateRatio from "./CalculatePerssentage";
 
 export default function ReportPage() {
   const COLORS = ["red", "green", "blue", "yellow"];

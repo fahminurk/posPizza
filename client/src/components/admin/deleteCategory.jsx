@@ -11,13 +11,13 @@ import {
   Box,
   Flex,
 } from "@chakra-ui/react";
-import { api } from "../../../api/api";
+import { api } from "../../api/api";
 
 export function DeleteCategory(props) {
   const deleteCategory = async () => {
     await api.delete("/categories/" + props.id);
     alert("succes");
-    props.onClose();
+    props.fetchCategories();
   };
   return (
     <>
@@ -31,7 +31,14 @@ export function DeleteCategory(props) {
           </ModalBody>
           <ModalFooter gap={5}>
             <Button onClick={props.onClose}>Cancel</Button>
-            <Button onClick={deleteCategory}>Delete</Button>
+            <Button
+              onClick={() => {
+                deleteCategory();
+                props.onClose();
+              }}
+            >
+              Delete
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

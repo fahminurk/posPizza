@@ -7,6 +7,7 @@ import CategoryPage from "../pages/categoryPage";
 import AdminSettings from "../pages/adminSettings";
 import DashboardCashier from "../pages/dashboardCashier";
 import ReportPage from "../pages/reportPage";
+import Test from "../pages/categoryPage";
 
 const routes = [
   <Route
@@ -49,6 +50,7 @@ const routes = [
     element={
       <ProtectedPage adminOnly={true}>
         <CategoryPage />
+        {/* <Test /> */}
       </ProtectedPage>
     }
   />,

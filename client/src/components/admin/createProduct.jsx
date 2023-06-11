@@ -14,9 +14,9 @@ import {
   Input,
   Select,
 } from "@chakra-ui/react";
-import iconphoto from "../../../assets/icon.png";
+import iconphoto from "../../assets/icon.png";
 import { useEffect, useRef, useState } from "react";
-import { api } from "../../../api/api";
+import { api } from "../../api/api";
 
 export function CreateProduct(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -30,7 +30,7 @@ export function CreateProduct(props) {
     category_id: "",
   });
   const [image, setImage] = useState(iconphoto);
-
+  console.log(category);
   //input
   const inputHandler = (e) => {
     const { id, value } = e.target;
@@ -45,8 +45,8 @@ export function CreateProduct(props) {
     async function getCategory() {
       const response = await api.get("/categories");
       // console.log(res.data);
-      const { category } = response.data;
-      setCategory(category);
+      const data = response.data;
+      setCategory(data);
     }
     getCategory();
   }, []);
@@ -75,8 +75,7 @@ export function CreateProduct(props) {
         await api.post("/products/newProduct", formData);
 
         alert("berhasil menambahkan produk");
-        props.fetchProduct();
-        props.onClose();
+        props.fetch();
       }
     } catch (err) {
       console.log(err.message);
@@ -152,6 +151,7 @@ export function CreateProduct(props) {
               _hover={{ color: "black", bg: "#EEF2F6" }}
               onClick={() => {
                 newProduct();
+                props.onClose();
               }}
             >
               Save

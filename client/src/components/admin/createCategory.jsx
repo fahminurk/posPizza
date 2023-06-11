@@ -8,13 +8,16 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
+  useDisclosure,
   Box,
+  Image,
   Input,
+  Select,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { api } from "../../../api/api";
+import { api } from "../../api/api";
 
-export function EditCategory(props) {
+export function CreateCategory(props) {
   const [category, setCategory] = useState({
     name: "",
   });
@@ -23,18 +26,20 @@ export function EditCategory(props) {
     const { id, value } = e.target;
     const tempCategory = { ...category };
     tempCategory[id] = value;
+    console.log(tempCategory);
     setCategory(tempCategory);
   };
 
-  const editCategory = async () => {
+  const newCategory = async () => {
     if (!category.name) {
       alert("isi semua");
     } else {
-      await api.patch("/categories/" + props.id, category);
-      alert("berhasil mengubah category");
-      props.onClose();
+      await api.post("/categories", category);
+      props.fetchCategories();
+      alert("berhasil menambahkan category");
     }
   };
+
   return (
     <>
       <Modal
@@ -45,21 +50,23 @@ export function EditCategory(props) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Edit Category</ModalHeader>
+          <ModalHeader>New Category</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Box>
               Name
-              <Input
-                id="name"
-                placeholder={props.name}
-                onChange={inputHandler}
-              />
+              <Input id="name" onChange={inputHandler} />
             </Box>
           </ModalBody>
 
           <ModalFooter>
-            <Button variant="ghost" onClick={editCategory}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                newCategory();
+                props.onClose();
+              }}
+            >
               Save
             </Button>
           </ModalFooter>

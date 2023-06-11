@@ -16,9 +16,9 @@ import {
   Avatar,
   useToast,
 } from "@chakra-ui/react";
-import iconphoto from "../../../assets/icon.png";
+import iconphoto from "../../assets/icon.png";
 import { useEffect, useRef, useState } from "react";
-import { api } from "../../../api/api";
+import { api } from "../../api/api";
 
 export function CreateUser(props) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -122,7 +122,7 @@ export function CreateUser(props) {
           duration: 2000,
           isClosable: true,
         });
-
+        props.fetch();
         props.onClose();
       }
     } catch (err) {

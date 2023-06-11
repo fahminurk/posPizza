@@ -1,170 +1,280 @@
 import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  Flex,
   Box,
+  Switch,
   Button,
   ButtonGroup,
-  Center,
-  Flex,
   IconButton,
   Input,
+  useDisclosure,
   InputGroup,
   InputLeftElement,
-  TabIndicator,
-  useDisclosure,
+  Avatar,
 } from "@chakra-ui/react";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from "@chakra-ui/react";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import { FiSearch } from "react-icons/fi";
 import { AiOutlinePlus } from "react-icons/ai";
+import { api } from "../api/api";
+import React, { useEffect, useState } from "react";
 import NavbarAdmin from "../components/admin/navbarAdmin";
 import SidebarAdmin from "../components/admin/sidebarAdmin";
-import { useEffect, useState } from "react";
-import { api } from "../api/api";
-import { CreateUser } from "../components/admin/users/createUser";
-import UserList from "../components/admin/users/userList";
-import { FiSearch } from "react-icons/fi";
+import { CreateUser } from "../components/admin/createUser";
+import { EditUser } from "../components/admin/editUser";
+import { DeleteUser } from "../components/admin/deleteUser";
+import { RiArrowDropUpLine, RiArrowDropDownLine } from "react-icons/ri";
 
 export default function AdminSettings() {
-  const { isOpen, onClose, onOpen } = useDisclosure();
-  const [users, setUsers] = useState([]);
-  const [all, setAll] = useState(0);
-  const [admin, setAdmin] = useState([]);
-  const [cashier, setCashier] = useState([]);
+  const [user, setUser] = useState([]); // menyimpan data dari database
+  const [editId, setEditId] = useState(null); // menyimpan id u/ di pass ke editmodal
+  const [deleteId, setDeleteId] = useState(null); // menyimpan id u/ di pass ke deletemodal
+  const createModal = useDisclosure();
+  const editModal = useDisclosure();
+  const deleteModal = useDisclosure();
 
-  const [totalPages, seTotalPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [role, setRole] = useState(undefined);
+  const [currentPage, setCurrentPage] = useState(1); // page pada saat pertama kali
+  const [itemsPerPage] = useState(5); // brp data/item per page
 
-  // const [sortDir, setSortDir] = useState(false);
-
-  const itemsPerPage = 3;
+  const indexOfFirstItem = currentPage * itemsPerPage - itemsPerPage;
+  // misal: indexOfFirstItem = 1 * 5 - 5 = 0, dimulai dari index ke 0 untuk page 1
+  //      : indexOfFirstItem = 2 * 5 - 5 = 5, dimulai dari index ke 5 untuk page 2, dan seterusnya
 
   useEffect(() => {
-    fetchUser(currentPage);
+    fetchUsers();
   }, []);
 
-  //fetch user
-  const fetchUser = async (page, role, search = "") => {
-    setCurrentPage(page);
-    setRole(role);
+  //
+  async function fetchUsers(search = "", sortby, sortdir) {
     const response = await api.get("/users", {
       params: {
-        page,
-        limit: parseInt(itemsPerPage),
-        role: role,
         search,
+        sortby,
+        sortdir,
       },
     });
-    console.log(response.data);
-    const { users, totalPages, all, admin, cashier } = response.data;
-    setUsers(users);
-    seTotalPages(totalPages);
-    setAll(all);
-    setAdmin(admin);
-    setCashier(cashier);
-  };
+    const data = response.data;
+    setUser(data);
+  }
 
-  const renderPagination = () => {
-    const pages = [];
-    for (let i = 1; i <= totalPages; i++) {
-      pages.push(
-        <Button
-          key={i}
-          onClick={() => fetchUser(i)}
-          bg={i == currentPage ? "white" : "#B42318"}
-          color={i == currentPage ? "#B42318" : "white"}
-          _hover={{ bg: "#912018", color: "white" }}
-        >
-          {i}
-        </Button>
-      );
-    }
-    return pages;
+  //
+  function paginate(array, page_size, page_number) {
+    return array.slice((page_number - 1) * page_size, page_number * page_size);
+    //(1-1)*5, 1*5 = index 0 sampai index 5, jadi di halaman pertama memunculkan dari index ke 0 - 5
+    //(2-1)*5, 2*5 = index 5 sampai index 10 jadi di halaman kedua memunculkan dari index ke 5 - 10
+  }
+  const currentItems = paginate(user, itemsPerPage, currentPage);
+  // currentItems = paginate(category, 5, 1)
+
+  //
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(user.length / itemsPerPage); i++) {
+    // i = 1 <= math.ceil(9/5) dibulatkan ke atas
+    // 1 <= 2
+    // 2 <= 2
+    //stop
+    pageNumbers.push(i);
+  }
+
+  const sortHandler = (sortby, sortdir) => {
+    fetchUsers("", sortby, sortdir);
   };
 
   return (
     <>
       <NavbarAdmin />
       <SidebarAdmin />
-      <Box
-        id="/products"
-        // w={"100vw"}
-        bg={"#EEF2F6"}
-        minH={"745px"}
-        pt={"88px"}
-        pl={"200px"}
-      >
+      <Box bg={"#EEF2F6"} minH={"745px"} pt={"88px"} pl={"200px"}>
         <Box w={"100%"} p={5}>
           <Box mb={5} fontWeight={"bold"}>
-            ADMIN
+            USERS
           </Box>
           <Flex justifyContent={"space-between"} mb={5}>
             <Box id="input">
-              <Box id="input">
-                <InputGroup>
-                  <InputLeftElement>
-                    <FiSearch />
-                  </InputLeftElement>
-                  <Input
-                    bg={"white"}
-                    placeholder="Search User"
-                    type="text"
-                    onChange={(e) => {
-                      fetchUser(1, role, e.target.value);
-                    }}
-                  />
-                </InputGroup>
-              </Box>
+              <InputGroup>
+                <InputLeftElement>
+                  <FiSearch />
+                </InputLeftElement>
+                <Input
+                  bg={"white"}
+                  placeholder="Search User"
+                  type="text"
+                  onChange={(e) => {
+                    fetchUsers(e.target.value);
+                  }}
+                />
+              </InputGroup>
             </Box>
 
-            <ButtonGroup isAttached variant="outline" onClick={onOpen}>
+            <ButtonGroup
+              isAttached
+              variant="outline"
+              onClick={createModal.onOpen}
+            >
               <IconButton
                 icon={<AiOutlinePlus />}
                 bg={"#B42318"}
                 color={"white"}
-              ></IconButton>
+              />
               <Button bg={"white"}>User</Button>
-              <CreateUser isOpen={isOpen} onClose={onClose} />
+              <CreateUser
+                isOpen={createModal.isOpen}
+                onClose={createModal.onClose}
+                fetch={fetchUsers}
+              />
             </ButtonGroup>
           </Flex>
 
-          <Box bg={"white"} w={"100%"} borderRadius={5} p={3} minH={"497px"}>
-            <Tabs
-              position="relative"
-              variant="unstyled"
-              maxW={"100%"}
-              minH={"417px"}
-            >
-              <TabList>
-                <Tab onClick={() => fetchUser(1)}>All ({all})</Tab>
-                <Tab onClick={() => fetchUser(1, "ADMIN")}>Admin ({admin})</Tab>
-                <Tab onClick={() => fetchUser(1, "CASHIER")}>
-                  Cashier ({cashier})
-                </Tab>
-              </TabList>
-              <TabIndicator
-                mt="-1.5px"
-                height="2px"
-                bg="blue.500"
-                borderRadius="1px"
-              />
-              <TabPanels>
-                <TabPanel id="all">
-                  <UserList
-                    users={users}
-                    // setSortDir={setSortDir(!sortDir)}
-                    // fetchUser={fetchUser}
-                  />
-                </TabPanel>
-                <TabPanel id="admin">
-                  <UserList users={users} />
-                </TabPanel>
+          <Box bg={"white"} w={"100%"} borderRadius={5} p={3}>
+            <Box minH={"417px"}>
+              <Table>
+                <Thead>
+                  <Tr>
+                    <Th w={"5%"}>No</Th>
+                    <Th w={"5%"}>Image</Th>
+                    <Th w={"25%"}>
+                      <Flex
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                      >
+                        Name
+                        <Flex flexDir={"column"}>
+                          <IconButton
+                            variant="ghost"
+                            colorScheme="teal"
+                            aria-label="Call Sage"
+                            fontSize="20px"
+                            size="2px"
+                            icon={<RiArrowDropUpLine />}
+                            onClick={() => sortHandler("name", "ASC")}
+                          />
+                          <IconButton
+                            variant="ghost"
+                            colorScheme="teal"
+                            aria-label="Call Sage"
+                            fontSize="20px"
+                            size="2px"
+                            icon={<RiArrowDropDownLine />}
+                            onClick={() => sortHandler("name", "DESC")}
+                          />
+                        </Flex>
+                      </Flex>
+                    </Th>
+                    <Th w={"15%"}>
+                      <Flex
+                        justifyContent={"space-between"}
+                        alignItems={"center"}
+                      >
+                        role
+                        <Flex flexDir={"column"}>
+                          <IconButton
+                            variant="ghost"
+                            colorScheme="teal"
+                            aria-label="Call Sage"
+                            fontSize="20px"
+                            size="2px"
+                            icon={<RiArrowDropUpLine />}
+                            onClick={() => sortHandler("role", "ASC")}
+                          />
+                          <IconButton
+                            variant="ghost"
+                            colorScheme="teal"
+                            aria-label="Call Sage"
+                            fontSize="20px"
+                            size="2px"
+                            icon={<RiArrowDropDownLine />}
+                            onClick={() => sortHandler("role", "DESC")}
+                          />
+                        </Flex>
+                      </Flex>
+                    </Th>
+                    <Th w={"20%"}>email</Th>
+                    <Th w={"20%"}> phone</Th>
+                    <Th w={"30%"}>Status</Th>
+                    <Th w={"15%"}>edit</Th>
+                  </Tr>
+                </Thead>
 
-                <TabPanel id="cashier">
-                  <UserList users={users} />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
-            <Center gap={3} p={2} bg={"#B42318"} borderRadius={5} h={"56px"}>
-              {renderPagination()}
-            </Center>
+                <Tbody>
+                  {currentItems.map((val, index) => (
+                    <Tr key={val.id}>
+                      <Td>{indexOfFirstItem + index + 1}</Td>
+                      <Td>
+                        <Avatar src={val.avatar_url} size={"md"} />
+                      </Td>
+                      <Td>{val.name}</Td>
+
+                      <Td>{val.role}</Td>
+                      <Td>{val.email}</Td>
+                      <Td>{val.phone}</Td>
+                      <Td>
+                        <Switch
+                          defaultChecked={val?.status === "AVAILABLE"}
+                          colorScheme="teal"
+                        />
+                      </Td>
+                      <Td>
+                        <Flex justifyContent={"space-evenly"}>
+                          <Button
+                            aria-label="edit"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setEditId(val.id);
+                              editModal.onOpen();
+                            }}
+                          >
+                            {<EditIcon />}
+                            <EditUser
+                              id={editId}
+                              isOpen={editModal.isOpen}
+                              onClose={editModal.onClose}
+                              fetch={fetchUsers}
+                            />
+                          </Button>
+                          <Button
+                            aria-label="Delete"
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => {
+                              setDeleteId(val.id);
+                              deleteModal.onOpen();
+                            }}
+                          >
+                            {<DeleteIcon />}
+                            <DeleteUser
+                              id={deleteId}
+                              isOpen={deleteModal.isOpen}
+                              onClose={deleteModal.onClose}
+                              fetch={fetchUsers}
+                            />
+                          </Button>
+                        </Flex>
+                      </Td>
+                    </Tr>
+                  ))}
+                </Tbody>
+              </Table>
+
+              <Box display="flex" justifyContent="center" mt={4}>
+                {pageNumbers.map((number) => (
+                  <Button
+                    key={number}
+                    size="sm"
+                    bg={number === currentPage ? "#B42318" : "white"}
+                    color={number == currentPage ? "white" : "#B42318"}
+                    onClick={() => setCurrentPage(number)}
+                    mr={2}
+                  >
+                    {number}
+                  </Button>
+                ))}
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Box>
