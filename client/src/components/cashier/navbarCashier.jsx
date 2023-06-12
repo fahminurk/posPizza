@@ -11,6 +11,7 @@ export default function NavbarCashier() {
         <Box
           pl={"112px"}
           w={"100vw"}
+          pr={"335px"}
           // maxW={"1119px"}
           h={"75px"}
           border={"solid"}
@@ -23,7 +24,8 @@ export default function NavbarCashier() {
             m={"13px 15px"}
             // bg={"white"}
           >
-            <Input w={"30%"} />
+            <Box></Box>
+            {/* <Input w={"30%"} onChange={(e) => props.fetchP(e.target.value)} /> */}
 
             <Flex gap={3} alignItems={"center"}>
               <Box flexDir={"column"} fontSize={"sm"}>

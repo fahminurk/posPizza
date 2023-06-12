@@ -33,7 +33,7 @@ export default function SidebarCashier() {
               </Tooltip>
             </Link>
 
-            <Link to="/dashboardCashier">
+            <Link to="/report">
               <Tooltip label="Report">
                 <IconButton size={"lg"} icon={<HiOutlineDocumentReport />} />
               </Tooltip>

@@ -1,5 +1,6 @@
 const db = require("../models");
 const productImage = process.env.productImage;
+
 const productController = {
   getAllProduct: async (req, res) => {
     try {
@@ -78,6 +79,15 @@ const productController = {
       },
     });
     return res.send({ message: "success deleted" });
+  },
+  getProductByCategory: async (req, res) => {
+    const { category_id } = req.query;
+    await db.Product.findAll({
+      category_id,
+      where: {
+        category_id: category_id,
+      },
+    }).then((result) => res.send(result));
   },
 };
 
